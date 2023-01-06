@@ -1,0 +1,26 @@
+install.packages("dplyr")
+install.packages("tidyverse") #
+install.packages("ggplot2")
+
+library(dplyr)
+library(tidyverse)
+library(ggplot2)
+
+select_data <- cinci_voucher %>%
+  select(student_id, lottery_winner, years_in_private_school, math_score_2019, ela_score_2019) %>%
+  mutate(total = math_score_2019 + ela_score_2019) %>%
+  arrange(math_score_2019)
+
+
+select_data$years_in_private_school <- as.factor(select_data$years_in_private_school)
+
+select_data %>%
+  ggplot(aes(x = years_in_private_school, y= total)) +
+  geom_boxplot() +
+  facet_grid(cols = vars(years_in_private_school))
+
+model <- lm(select_data$total ~ select_data$years_in_private_school)
+
+summary(model)
+
+options(scipen = 9999)
